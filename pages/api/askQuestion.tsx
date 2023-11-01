@@ -1,0 +1,43 @@
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
+import query from '@/lib/queryAPI';
+import type { NextApiRequest, NextApiResponse } from 'next'
+import admin from 'firebase-admin'
+import { adminDB } from '@/firebaseAdmin';
+type Data = {
+    answer: string
+}
+
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<Data>
+) {
+    const { chatId, session, prompt, model } = req.body;
+    if (!prompt) {
+        res.status(400).json({ answer: "Please Provide a prompt!" })
+        return;
+    }
+    if (!chatId) {
+        res.status(400).json({ answer: "Please Provide a valid chatId!" })
+        return;
+    }
+    const response = await query(prompt, model)
+    const message: Message = {
+        text: response || "ChatGPT is unable to give the answer !",
+        createdAt: admin.firestore.Timestamp.now(),
+        user: {
+            _id: "ChatGPT",
+            name: "ChatGPT",
+            avatar: "data:image/png;base64,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"
+        }
+    }
+
+    await adminDB.collection("users")
+        .doc(session?.user?.email!)
+        .collection("chats")
+        .doc(chatId)
+        .collection("messages")
+        .add(message)
+
+
+    res.status(200).json({ answer: message.text })
+}
