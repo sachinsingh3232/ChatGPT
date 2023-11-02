@@ -24,7 +24,7 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           {session ?
             <div className="flex">
-              <div className=" bg-[#202123] md:max-w-xs h-screen overflow-y-auto md:min-w-[20rem] sm:min-w-[8rem] sm:max-w-[10rem] sticky top-0">
+              <div className=" bg-[#202123] max-w-xs h-screen overflow-y-auto md:min-w-[20rem] sm:min-w-[80rem] sticky top-0">
                 <Sidebar />
               </div>
               <ClientProvioder />
